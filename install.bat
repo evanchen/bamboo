@@ -10,10 +10,13 @@ goto end
 
 set OLDGOPATH=%GOPATH%
 set GOPATH=%~dp0
+echo %GOPATH%
 
 gofmt -w src
 
-go install %1
+go install bamboo
 :end
 
 echo finished
+
+pause

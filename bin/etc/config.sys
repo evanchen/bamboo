@@ -1,0 +1,23 @@
+
+#系统配置文件,以'#'开始为注释
+#配置格式是每行一对'key = value'
+
+#日志等级
+log_level = LOG_LEVEL_DEBUG
+
+#平台名称
+pf_name = "无名"
+
+#服务器id
+host_id = 1001
+
+#master进程相关,服务器只有一个master进程,master进程不会主动连接game进程端口
+master_ip = 0.0.0.0
+master_port = 3100
+
+#game进程相关(可以加任意多个game进程信息)
+#game进程启动完毕,主动连接master进程,按先后连接顺序编号
+game_1_port = 3101
+game_2_port = 3102
+#game_3_port = 3103
+
