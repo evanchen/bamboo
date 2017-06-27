@@ -1,0 +1,11 @@
+#folders
+bin
+pkg
+src/github.com
+src/golang.org
+src/google.golang.org
+
+*.exe
+
+!bin/protoc-gen-go.exe
+!bin/etc/config.sys

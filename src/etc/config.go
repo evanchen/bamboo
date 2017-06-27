@@ -75,8 +75,8 @@ func (cfg *Config) ParseLine(line []byte) {
 	fmt.Println(cName, cValue)
 }
 
-func (cfg *Config) GetConfigInt(key string) (bool, int64) {
-	v, ok := cfg.Data[key]
+func GetConfigInt(key string) (bool, int64) {
+	v, ok := mConfig.Data[key]
 	if !ok {
 		return false, -1
 	}
@@ -88,8 +88,8 @@ func (cfg *Config) GetConfigInt(key string) (bool, int64) {
 	return true, value
 }
 
-func (cfg *Config) GetConfigStr(key string) (bool, string) {
-	v, ok := cfg.Data[key]
+func GetConfigStr(key string) (bool, string) {
+	v, ok := mConfig.Data[key]
 	if !ok {
 		return false, ""
 	}
@@ -98,8 +98,8 @@ func (cfg *Config) GetConfigStr(key string) (bool, string) {
 
 // It accepts 1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False.
 // Any other value returns an error.
-func (cfg *Config) GetConfigBool(key string) (bool, bool) {
-	v, ok := cfg.Data[key]
+func GetConfigBool(key string) (bool, bool) {
+	v, ok := mConfig.Data[key]
 	if !ok {
 		return false, false
 	}
@@ -111,8 +111,8 @@ func (cfg *Config) GetConfigBool(key string) (bool, bool) {
 	return true, value
 }
 
-func (cfg *Config) GetConfigFloat(key string) (bool, float64) {
-	v, ok := cfg.Data[key]
+func GetConfigFloat(key string) (bool, float64) {
+	v, ok := mConfig.Data[key]
 	if !ok {
 		return false, -1
 	}
@@ -126,10 +126,10 @@ func (cfg *Config) GetConfigFloat(key string) (bool, float64) {
 
 func Test() {
 	for k, v := range mConfig.Data {
-		key1, value1 := mConfig.GetConfigInt(k)
-		key2, value2 := mConfig.GetConfigFloat(k)
-		key3, value3 := mConfig.GetConfigBool(k)
-		key4, value4 := mConfig.GetConfigStr(k)
+		key1, value1 := GetConfigInt(k)
+		key2, value2 := GetConfigFloat(k)
+		key3, value3 := GetConfigBool(k)
+		key4, value4 := GetConfigStr(k)
 
 		fmt.Println("============", k, v)
 		fmt.Println(key1, value1)
