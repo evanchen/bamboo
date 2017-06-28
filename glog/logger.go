@@ -2,11 +2,11 @@ package glog
 
 import (
 	"fmt"
+	"github.com/evanchen/bamboo/tools"
 	"log"
 	"os"
 	lpath "path"
 	"time"
-	"tools"
 )
 
 type Logger struct {

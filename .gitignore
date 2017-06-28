@@ -1,11 +1,12 @@
 #folders
-bin
-pkg
-src/github.com
-src/golang.org
-src/google.golang.org
+bin/
+pkg/
+src/github.com/
+src/golang.org/
+src/google.golang.org/
 
 *.exe
+*.log
 
 !bin/protoc-gen-go.exe
 !bin/etc/config.sys

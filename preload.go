@@ -1,10 +1,10 @@
 package main
 
 import (
-	"base"
-	"etc"
 	"flag"
-	"glog"
+	"github.com/evanchen/bamboo/base"
+	"github.com/evanchen/bamboo/etc"
+	"github.com/evanchen/bamboo/glog"
 	"log"
 )
 

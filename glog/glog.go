@@ -1,8 +1,8 @@
 package glog
 
 import (
-	"base"
 	"fmt"
+	"github.com/evanchen/bamboo/base"
 )
 
 // 系统日志等级

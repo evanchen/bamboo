@@ -1,8 +1,8 @@
 package glog
 
 import (
-	"base"
 	"fmt"
+	"github.com/evanchen/bamboo/base"
 )
 
 // 在rpc日志没启动前,进程里写入的所有日志都会写到本地日志
