@@ -3,6 +3,8 @@ package glog
 import (
 	"fmt"
 	"github.com/evanchen/bamboo/base"
+	"github.com/evanchen/bamboo/etc"
+	"log"
 )
 
 // 系统日志等级
@@ -56,14 +58,6 @@ func (lg *Logger) WriteFunc(lv type_log_level, cls, format string, args ...inter
 	if g_log_level < lv {
 		return
 	}
-
-	// defer func() {
-	// 	if err := recover(); err != nil {
-	// 		errStr := fmt.Sprintf("[%s][%02d] %s\n", cls, base.GSID, format)
-	// 		fmt.Println(errStr)
-	// 		WriteLog(g_runtime_log_path, errStr)
-	// 	}
-	// }()
 	ctn := fmt.Sprintf(format, args...)
 	ctn = fmt.Sprintf("[%s][%02d] %s\n", cls, base.GSID, ctn)
 	WriteLog(lg.path, ctn)
@@ -79,4 +73,13 @@ func (lg *Logger) Info(format string, args ...interface{}) {
 
 func (lg *Logger) Error(format string, args ...interface{}) {
 	lg.WriteFunc(LOG_LEVEL_ERROR, "Error", format, args...)
+}
+
+func Init() {
+	ret, lv := etc.GetConfigInt("log_level")
+	if !ret {
+		log.Fatal("config log_level error")
+	}
+	glog.ChangeSysLogLevel(int(lv))
+	glog.CreateLocalLog()
 }

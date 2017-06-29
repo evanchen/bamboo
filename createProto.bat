@@ -14,7 +14,9 @@ protoc -I=%SRC_DIR% --go_out=%DST_DIR% %SRC_DIR%/*.proto
 rem this is to generate grpc protocols
 rem set SRC_DIR=D:\github\bamboo\src\google.golang.org\grpc\examples\route_guide\routeguide
 rem set DST_DIR=D:\github\bamboo\src\google.golang.org\grpc\examples\route_guide\routeguide
-rem protoc -I=%SRC_DIR% --go_out=plugins=grpc:%DST_DIR% %SRC_DIR%/*.proto
+set SRC_DIR=D:\github\bamboo\src\github.com\evanchen\bamboo\rpcpto
+set DST_DIR=D:\github\bamboo\src\github.com\evanchen\bamboo\rpcpto
+protoc -I=%SRC_DIR% --go_out=plugins=grpc:%DST_DIR% %SRC_DIR%/*.proto
 
 echo finished
 
