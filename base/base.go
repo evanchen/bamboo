@@ -4,30 +4,32 @@ import (
 	"log"
 )
 
+// 本进程id
 var gsid = -1
+
 var server_ready = make(chan struct{})
 
-func InitGsID(gsid int) {
+// 0进程id
+const MASTER_GSID = 0
+
+// 初始化本进程id
+func InitGsId(gsid int) {
 	id := GetGsId()
 	if id != -1 {
-		log.Fatal("[InitGsID]GSID is initiated")
+		log.Fatal("[InitGsId]GSID is initiated")
 	}
 	if gsid < 0 {
-		log.Fatal("[InitGsID]param error")
+		log.Fatal("[InitGsId]param error")
 	}
-	setGsId(id)
-}
-
-func setGsId(id int) {
 	gsid = id
 }
 
-func GetGsId() {
+func GetGsId() int {
 	return gsid
 }
 
 func IsServerReady() {
-	<- server_ready
+	<-server_ready
 }
 
 func ServerReady() {

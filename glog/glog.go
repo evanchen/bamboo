@@ -59,7 +59,7 @@ func (lg *Logger) WriteFunc(lv type_log_level, cls, format string, args ...inter
 		return
 	}
 	ctn := fmt.Sprintf(format, args...)
-	ctn = fmt.Sprintf("[%s][%02d] %s\n", cls, base.GSID, ctn)
+	ctn = fmt.Sprintf("[%s][%02d] %s\n", cls, base.GetGsId(), ctn)
 	WriteLog(lg.path, ctn)
 }
 
@@ -80,6 +80,6 @@ func Init() {
 	if !ret {
 		log.Fatal("config log_level error")
 	}
-	glog.ChangeSysLogLevel(int(lv))
-	glog.CreateLocalLog()
+	ChangeSysLogLevel(int(lv))
+	CreateLocalLog()
 }

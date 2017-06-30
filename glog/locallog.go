@@ -9,6 +9,6 @@ import (
 var g_logger *Logger
 
 func CreateLocalLog() {
-	path := fmt.Sprintf("log/engine/s%d_local.log", base.GSID)
+	path := fmt.Sprintf("log/engine/s%d_local.log", base.GetGsId())
 	g_logger = CreateLog(path)
 }

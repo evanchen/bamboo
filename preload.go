@@ -14,10 +14,15 @@ var (
 
 func main() {
 	flag.Parse()
-	base.InitGsID(*gsid)
+	base.InitGsId(*gsid)
 	etc.LoadConfig()
+	etc.CheckSysConfig(base.GetGsId())
 	glog.Init()
 	rpc.StartRPC()
+
+	// rpc服务启动,放在所有需要注册rpc服务的模块后
+	rpc.StartServe()
+
+	// 等待所有game进程连接完毕,开放玩家连接
 	base.IsServerReady()
 }
-

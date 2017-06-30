@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package rpcpto;
+
+// Interface exported by all server
+service RpcEngine {
+	rpc RegisterGame(ReqRegister) returns (RetRegister) {}
+}
+
+
+message ReqRegister {
+	int32 gsId 		= 1;
+}
+
+message RetRegister {
+	int32 ret		= 1;
+}

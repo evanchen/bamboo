@@ -124,6 +124,24 @@ func GetConfigFloat(key string) (bool, float64) {
 	return true, value
 }
 
+func CheckSysConfig(curGsId int) {
+	ret, num := GetConfigInt("max_game_num")
+	if !ret {
+		log.Fatalf("[CheckSysConfig] no max_game_num")
+	}
+	if curGsId >= int(num) {
+		log.Fatalf("[CheckSysConfig] current gsId: %d >= max_game_num: %d", curGsId, num)
+	}
+
+	for gsId := 0; gsId < int(num); gsId++ {
+		cName := fmt.Sprintf("game_%d_port", gsId)
+		ret, port := GetConfigInt(cName)
+		if !ret {
+			log.Fatalf("[CheckSysConfig] %s config error: %d", cName, port)
+		}
+	}
+}
+
 func Test() {
 	for k, v := range mConfig.Data {
 		key1, value1 := GetConfigInt(k)
