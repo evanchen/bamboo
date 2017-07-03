@@ -15,14 +15,16 @@ host_id = 1001
 master_ip = 0.0.0.0
 master_port = 3099
 
-#game进程相关(可以加任意多个game进程信息,但数量必须小于等于 max_game_num)
+#game进程相关(除0进程外,可以加任意多个game进程,但数量必须小于等于 max_game_num)
 #game进程启动完毕,主动连接master进程,进程编号按启动脚本传递
 #以下是每个进程的rpc监听端口
+# 0进程
 game_0_port = 3100
+# 其他game进程
 game_1_port = 3101
 game_2_port = 3102
 game_3_port = 3103
 
 #最大game进程数量
-max_game_num = 3
+max_game_num = 2
 

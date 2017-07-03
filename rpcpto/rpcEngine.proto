@@ -2,9 +2,8 @@ syntax = "proto3";
 
 package rpcpto;
 
-// Interface exported by all server
 service RpcEngine {
-	rpc RegisterGame(ReqRegister) returns (RetRegister) {}
+	rpc RegisterEngine(ReqRegister) returns (RetRegister) {}
 }
 
 

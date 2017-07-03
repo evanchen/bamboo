@@ -72,7 +72,7 @@ func (cfg *Config) ParseLine(line []byte) {
 		log.Printf("\"%s\": key repeated!", line)
 	}
 	cfg.Data[cName] = cValue
-	fmt.Println(cName, cValue)
+	//fmt.Println(cName, cValue)
 }
 
 func GetConfigInt(key string) (bool, int64) {
@@ -124,22 +124,33 @@ func GetConfigFloat(key string) (bool, float64) {
 	return true, value
 }
 
+// 以下为自定义函数
+
 func CheckSysConfig(curGsId int) {
 	ret, num := GetConfigInt("max_game_num")
 	if !ret {
 		log.Fatalf("[CheckSysConfig] no max_game_num")
 	}
-	if curGsId >= int(num) {
+	if curGsId > int(num) {
 		log.Fatalf("[CheckSysConfig] current gsId: %d >= max_game_num: %d", curGsId, num)
 	}
 
-	for gsId := 0; gsId < int(num); gsId++ {
+	for gsId := 0; gsId <= int(num); gsId++ {
 		cName := fmt.Sprintf("game_%d_port", gsId)
 		ret, port := GetConfigInt(cName)
 		if !ret {
 			log.Fatalf("[CheckSysConfig] %s config error: %d", cName, port)
 		}
 	}
+}
+
+func GetRpcPort(gsId int) int64 {
+	cName := fmt.Sprintf("game_%d_port", gsId)
+	ret, port := GetConfigInt(cName)
+	if !ret {
+		log.Panicf("[GetRpcPort] %s config error: %d\n", cName, port)
+	}
+	return port
 }
 
 func Test() {

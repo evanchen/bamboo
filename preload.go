@@ -2,10 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
 	"github.com/evanchen/bamboo/rpc"
+	"runtime"
+	"time"
 )
 
 var (
@@ -18,11 +21,24 @@ func main() {
 	etc.LoadConfig()
 	etc.CheckSysConfig(base.GetGsId())
 	glog.Init()
-	rpc.StartRPC()
 
-	// rpc服务启动,放在所有需要注册rpc服务的模块后
-	rpc.StartServe()
+	runtime.GOMAXPROCS(4)
 
+	go rpc.StartRPC()
 	// 等待所有game进程连接完毕,开放玩家连接
+	fmt.Println("waiting rpc connection...")
 	base.IsServerReady()
+	fmt.Println("all rpc connections are ready")
+	close := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-time.After(5 * time.Second):
+				fmt.Println("tick tack")
+			}
+		}
+		close <- true
+	}()
+
+	<-close
 }
