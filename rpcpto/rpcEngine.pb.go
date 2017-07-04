@@ -6,10 +6,13 @@ Package rpcpto is a generated protocol buffer package.
 
 It is generated from these files:
 	rpcEngine.proto
+	rpcLog.proto
 
 It has these top-level messages:
 	ReqRegister
 	RetRegister
+	LogInfo
+	RetSend
 */
 package rpcpto
 

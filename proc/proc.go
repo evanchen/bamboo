@@ -104,7 +104,7 @@ func (s *RpcEngine) ClientRegist(gsId int, conn *grpc.ClientConn) interface{} {
 	client := pb.NewRpcEngineClient(conn)
 	_, err := client.RegisterEngine(context.Background(), &pb.ReqRegister{GsId: int32(base.GetGsId())})
 	if err != nil {
-		log.Fatalf("[proc.InitClient] RegisterEngine failed: %d", base.GetGsId())
+		log.Fatalf("[proc.InitClient] RegisterEngine failed: %s\n", err.Error())
 	}
 	s.RegGsIds[gsId].out = true
 	s.RegGsIds[gsId].client = client

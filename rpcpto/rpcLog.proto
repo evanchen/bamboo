@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package rpcpto;
+
+service RpcLog {
+	rpc SendLog(stream LogInfo) returns (RetSend) {}
+}
+
+message LogInfo {
+	string path = 1;
+	string content = 2;
+}
+
+message RetSend {
+	int32 ret		= 1;
+}

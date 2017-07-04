@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
+	pb "github.com/evanchen/bamboo/rpcpto"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 	"log"
 )
 
@@ -32,17 +35,20 @@ var g_log_level = LOG_LEVEL_DEBUG
 var g_log_type = LOG_LOCAL
 var g_runtime_log_path = "log/engine/runtime.log"
 
-func ChangeSysLogLevel(lv int) {
-	g_log_level = type_log_level(lv)
+// 发送到日志服务的日志,通过channel发送
+var chmsg = make(chan *pb.LogInfo, 50)
+
+func ChangeSysLogLevel(lv type_log_level) {
+	g_log_level = lv
 }
 
-func ChangeSysLogType(tp int) {
-	g_log_type = type_log(tp)
+func ChangeSysLogType(tp type_log) {
+	g_log_type = tp
 }
 
 func WriteLog(path, ctn string) {
 	if g_log_type == LOG_RPC {
-		//RPC.SendLog(path,ctn)
+		chmsg <- &pb.LogInfo{Path: path, Content: ctn}
 	} else {
 		WriteFile(g_logger.path, ctn)
 	}
@@ -54,24 +60,24 @@ func New(path string) *ModuleLogger {
 	}
 }
 
-func (lg *Logger) WriteFunc(lv type_log_level, cls, format string, args ...interface{}) {
+func (lg *ModuleLogger) WriteFunc(lv type_log_level, cls, format string, args ...interface{}) {
 	if g_log_level < lv {
 		return
 	}
 	ctn := fmt.Sprintf(format, args...)
-	ctn = fmt.Sprintf("[%s][%02d] %s\n", cls, base.GetGsId(), ctn)
+	ctn = fmt.Sprintf("[%s][%02d] %s", cls, base.GetGsId(), ctn)
 	WriteLog(lg.path, ctn)
 }
 
-func (lg *Logger) Debug(format string, args ...interface{}) {
+func (lg *ModuleLogger) Debug(format string, args ...interface{}) {
 	lg.WriteFunc(LOG_LEVEL_DEBUG, "Debug", format, args...)
 }
 
-func (lg *Logger) Info(format string, args ...interface{}) {
+func (lg *ModuleLogger) Info(format string, args ...interface{}) {
 	lg.WriteFunc(LOG_LEVEL_INFO, "Info", format, args...)
 }
 
-func (lg *Logger) Error(format string, args ...interface{}) {
+func (lg *ModuleLogger) Error(format string, args ...interface{}) {
 	lg.WriteFunc(LOG_LEVEL_ERROR, "Error", format, args...)
 }
 
@@ -80,6 +86,40 @@ func Init() {
 	if !ret {
 		log.Fatal("config log_level error")
 	}
-	ChangeSysLogLevel(int(lv))
+	ChangeSysLogLevel(type_log_level(lv))
 	CreateLocalLog()
+	StartRpcLog()
+}
+
+func StartRpcLog() {
+	var opts []grpc.DialOption
+	opts = append(opts, grpc.WithInsecure())
+	opts = append(opts, grpc.WithBlock())
+	ret, port := etc.GetConfigInt("log_server_port")
+	if !ret {
+		log.Fatalf("[StartRpcLog] log_server_port error\n")
+	}
+	addrPort := fmt.Sprintf("127.0.0.1:%d", port)
+	conn, err := grpc.Dial(addrPort, opts...)
+	fmt.Printf("[StartRpcLog] %v, %v\n", conn, err)
+	if err != nil {
+		log.Fatalf("[StartRpcLog] fail to dial: %v", err)
+	}
+	client := pb.NewRpcLogClient(conn)
+
+	go func() {
+		stream, err := client.SendLog(context.Background())
+		if err != nil {
+			log.Fatalf("%v.SendLog(_) = _, %v", client, err)
+		}
+		for msg := range chmsg {
+			if err := stream.Send(msg); err != nil {
+				log.Fatalf("%v.Send(%v) = %v", stream, msg, err)
+			}
+		}
+
+		if _, err := stream.CloseAndRecv(); err != nil {
+			log.Fatalf("%v.CloseAndRecv() got error %v, want %v", stream, err, nil)
+		}
+	}()
 }

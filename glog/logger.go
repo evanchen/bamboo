@@ -87,10 +87,11 @@ func RollFile(now time.Time) {
 
 func Test() {
 	path := "log/key/test.log"
-	WriteFile(path, "sfsasf 234124313646")
-	WriteFile(path, "sfsasf 545rt")
-	WriteFile(path, "sfsasf xxxxxxxxxxx")
-	WriteFile(path, "sfsasf dfgd")
-	RollFile(time.Now())
-	WriteFile(path, "after rename")
+	logger := New(path)
+	logger.Debug("%s==%d", "哈哈", 45623312)
+	logger.Info("%s===%s", "hee", "545rt")
+	logger.Error("%s====%s", "啊大大", "xxxxxxxxxxx")
+	logger.Debug("%s=====%s", "sfsasf dfgd", "cvdfasfasf")
+	//RollFile(time.Now())
+	//logger.Debug((path, "after rename")
 }

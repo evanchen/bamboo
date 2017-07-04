@@ -27,18 +27,20 @@ func main() {
 	go rpc.StartRPC()
 	// 等待所有game进程连接完毕,开放玩家连接
 	fmt.Println("waiting rpc connection...")
-	base.IsServerReady()
+	//base.IsServerReady()
 	fmt.Println("all rpc connections are ready")
-	close := make(chan bool)
+	glog.ChangeSysLogType(glog.LOG_RPC)
+
+	closech := make(chan struct{})
 	go func() {
 		for {
 			select {
-			case <-time.After(5 * time.Second):
+			case <-time.Tick(5 * time.Second):
 				fmt.Println("tick tack")
+				glog.Test()
 			}
 		}
-		close <- true
+		close(closech)
 	}()
-
-	<-close
+	<-closech
 }
