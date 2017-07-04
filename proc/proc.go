@@ -84,17 +84,17 @@ func NewRpcEngineServe() *RpcEngine {
 }
 
 func (s *RpcEngine) RegisterEngine(ctx context.Context, p *pb.ReqRegister) (*pb.RetRegister, error) {
+	gsId := int(p.GsId)
 	pInOut := s.RegGsIds[gsId]
-	if pInOut.out && pInOut.in {
+	if pInOut.Out() && pInOut.In() {
 		//本进程已经请求过对方的服务了,但是对方仍请求注册服务时,说明对方进程可能重启了
-		//此时延长1秒(先让本次函数调用返回),然后重新向对方新启动的进程注册服务,向对方确认,这边的out也是ok的
+		//此时延长1秒(先让本次函数调用返回),然后重新向对方新启动的进程注册服务,向对方确认,这边的in/out都是ok的
 		//注意,grpc.ClientConn 是支持自动重连的,所以网络连接不需要再次手动connect
 		go func() {
 			<-time.After(1 * time.Second)
 			pInOut.client.(pb.RpcEngineClient).RegisterEngine(context.Background(), &pb.ReqRegister{GsId: int32(base.GetGsId())})
 		}()
 	}
-	gsId := int(p.GsId)
 	pInOut.in = true
 	fmt.Printf("[RegisterEngine] finish: %d\n", gsId)
 	return &pb.RetRegister{Ret: 1}, nil
