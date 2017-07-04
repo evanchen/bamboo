@@ -61,7 +61,7 @@ func New(path string) *ModuleLogger {
 }
 
 func (lg *ModuleLogger) WriteFunc(lv type_log_level, cls, format string, args ...interface{}) {
-	if g_log_level < lv {
+	if lv < g_log_level {
 		return
 	}
 	ctn := fmt.Sprintf(format, args...)
