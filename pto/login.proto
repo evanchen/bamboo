@@ -1,26 +1,17 @@
 syntax = "proto3";
 package pto;
 
-message Person {
-  string name = 1;
-  int32 id = 2;  // Unique ID number for this person.
-  string email = 3;
-
-  enum PhoneType {
-    MOBILE = 0;
-    HOME = 1;
-    WORK = 2;
-  }
-
-  message PhoneNumber {
-    string number = 1;
-    PhoneType type = 2;
-  }
-
-  repeated PhoneNumber phones = 4;
+message c_login {
+  string ver = 1;
+  int64 uid = 2;
 }
 
-// Our address book file is just one of these.
-message AddressBook {
-  repeated Person people = 1;
+message s_login {
+  string ver = 1;
+  string account = 2;
+  string passwd = 3;
+}
+
+message s_login_req {
+  int64 uid = 1;
 }

@@ -8,8 +8,9 @@ It is generated from these files:
 	login.proto
 
 It has these top-level messages:
-	Person
-	AddressBook
+	CLogin
+	SLogin
+	SLoginReq
 */
 package pto
 
@@ -28,136 +29,95 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type Person_PhoneType int32
-
-const (
-	Person_MOBILE Person_PhoneType = 0
-	Person_HOME   Person_PhoneType = 1
-	Person_WORK   Person_PhoneType = 2
-)
-
-var Person_PhoneType_name = map[int32]string{
-	0: "MOBILE",
-	1: "HOME",
-	2: "WORK",
-}
-var Person_PhoneType_value = map[string]int32{
-	"MOBILE": 0,
-	"HOME":   1,
-	"WORK":   2,
+type CLogin struct {
+	Ver string `protobuf:"bytes,1,opt,name=ver" json:"ver,omitempty"`
+	Uid int64  `protobuf:"varint,2,opt,name=uid" json:"uid,omitempty"`
 }
 
-func (x Person_PhoneType) String() string {
-	return proto.EnumName(Person_PhoneType_name, int32(x))
-}
-func (Person_PhoneType) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
+func (m *CLogin) Reset()                    { *m = CLogin{} }
+func (m *CLogin) String() string            { return proto.CompactTextString(m) }
+func (*CLogin) ProtoMessage()               {}
+func (*CLogin) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
-type Person struct {
-	Name   string                `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	Id     int32                 `protobuf:"varint,2,opt,name=id" json:"id,omitempty"`
-	Email  string                `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
-	Phones []*Person_PhoneNumber `protobuf:"bytes,4,rep,name=phones" json:"phones,omitempty"`
-}
-
-func (m *Person) Reset()                    { *m = Person{} }
-func (m *Person) String() string            { return proto.CompactTextString(m) }
-func (*Person) ProtoMessage()               {}
-func (*Person) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-
-func (m *Person) GetName() string {
+func (m *CLogin) GetVer() string {
 	if m != nil {
-		return m.Name
+		return m.Ver
 	}
 	return ""
 }
 
-func (m *Person) GetId() int32 {
+func (m *CLogin) GetUid() int64 {
 	if m != nil {
-		return m.Id
+		return m.Uid
 	}
 	return 0
 }
 
-func (m *Person) GetEmail() string {
+type SLogin struct {
+	Ver     string `protobuf:"bytes,1,opt,name=ver" json:"ver,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account" json:"account,omitempty"`
+	Passwd  string `protobuf:"bytes,3,opt,name=passwd" json:"passwd,omitempty"`
+}
+
+func (m *SLogin) Reset()                    { *m = SLogin{} }
+func (m *SLogin) String() string            { return proto.CompactTextString(m) }
+func (*SLogin) ProtoMessage()               {}
+func (*SLogin) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
+func (m *SLogin) GetVer() string {
 	if m != nil {
-		return m.Email
+		return m.Ver
 	}
 	return ""
 }
 
-func (m *Person) GetPhones() []*Person_PhoneNumber {
+func (m *SLogin) GetAccount() string {
 	if m != nil {
-		return m.Phones
-	}
-	return nil
-}
-
-type Person_PhoneNumber struct {
-	Number string           `protobuf:"bytes,1,opt,name=number" json:"number,omitempty"`
-	Type   Person_PhoneType `protobuf:"varint,2,opt,name=type,enum=pto.Person_PhoneType" json:"type,omitempty"`
-}
-
-func (m *Person_PhoneNumber) Reset()                    { *m = Person_PhoneNumber{} }
-func (m *Person_PhoneNumber) String() string            { return proto.CompactTextString(m) }
-func (*Person_PhoneNumber) ProtoMessage()               {}
-func (*Person_PhoneNumber) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
-
-func (m *Person_PhoneNumber) GetNumber() string {
-	if m != nil {
-		return m.Number
+		return m.Account
 	}
 	return ""
 }
 
-func (m *Person_PhoneNumber) GetType() Person_PhoneType {
+func (m *SLogin) GetPasswd() string {
 	if m != nil {
-		return m.Type
+		return m.Passwd
 	}
-	return Person_MOBILE
+	return ""
 }
 
-// Our address book file is just one of these.
-type AddressBook struct {
-	People []*Person `protobuf:"bytes,1,rep,name=people" json:"people,omitempty"`
+type SLoginReq struct {
+	Uid int64 `protobuf:"varint,1,opt,name=uid" json:"uid,omitempty"`
 }
 
-func (m *AddressBook) Reset()                    { *m = AddressBook{} }
-func (m *AddressBook) String() string            { return proto.CompactTextString(m) }
-func (*AddressBook) ProtoMessage()               {}
-func (*AddressBook) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (m *SLoginReq) Reset()                    { *m = SLoginReq{} }
+func (m *SLoginReq) String() string            { return proto.CompactTextString(m) }
+func (*SLoginReq) ProtoMessage()               {}
+func (*SLoginReq) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
-func (m *AddressBook) GetPeople() []*Person {
+func (m *SLoginReq) GetUid() int64 {
 	if m != nil {
-		return m.People
+		return m.Uid
 	}
-	return nil
+	return 0
 }
 
 func init() {
-	proto.RegisterType((*Person)(nil), "pto.Person")
-	proto.RegisterType((*Person_PhoneNumber)(nil), "pto.Person.PhoneNumber")
-	proto.RegisterType((*AddressBook)(nil), "pto.AddressBook")
-	proto.RegisterEnum("pto.Person_PhoneType", Person_PhoneType_name, Person_PhoneType_value)
+	proto.RegisterType((*CLogin)(nil), "pto.c_login")
+	proto.RegisterType((*SLogin)(nil), "pto.s_login")
+	proto.RegisterType((*SLoginReq)(nil), "pto.s_login_req")
 }
 
 func init() { proto.RegisterFile("login.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 245 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x64, 0x50, 0xdd, 0x4a, 0x84, 0x40,
-	0x14, 0x6e, 0xd4, 0x1d, 0xda, 0x33, 0xb0, 0xc8, 0xa1, 0x1f, 0xe9, 0x4a, 0xec, 0xc6, 0x08, 0x0c,
-	0xec, 0x09, 0x5a, 0x58, 0x28, 0x6a, 0x53, 0x86, 0xa0, 0xeb, 0x5d, 0x3c, 0x94, 0xa4, 0x73, 0x06,
-	0xb5, 0x8b, 0x7d, 0xed, 0x9e, 0x20, 0x9c, 0x95, 0x10, 0xba, 0xfb, 0xfe, 0xf8, 0xbe, 0x99, 0x03,
-	0xaa, 0xe1, 0x8f, 0xda, 0x64, 0xb6, 0xe3, 0x81, 0xd1, 0xb7, 0x03, 0x27, 0x3f, 0x02, 0x64, 0x49,
-	0x5d, 0xcf, 0x06, 0x11, 0x02, 0xb3, 0x6b, 0x29, 0x12, 0xb1, 0x48, 0x97, 0xda, 0x61, 0x5c, 0x81,
-	0x57, 0x57, 0x91, 0x17, 0x8b, 0x74, 0xa1, 0xbd, 0xba, 0xc2, 0x33, 0x58, 0x50, 0xbb, 0xab, 0x9b,
-	0xc8, 0x77, 0xa1, 0x23, 0xc1, 0x3b, 0x90, 0xf6, 0x93, 0x0d, 0xf5, 0x51, 0x10, 0xfb, 0xa9, 0xca,
-	0x2f, 0x33, 0x3b, 0x70, 0x76, 0xac, 0xcd, 0xca, 0xd1, 0x79, 0xfd, 0x6e, 0xf7, 0xd4, 0xe9, 0x29,
-	0x76, 0x55, 0x82, 0x9a, 0xc9, 0x78, 0x01, 0xd2, 0x38, 0x34, 0x6d, 0x4f, 0x0c, 0x6f, 0x20, 0x18,
-	0x0e, 0x96, 0xdc, 0xfe, 0x2a, 0x3f, 0xff, 0xd7, 0xfa, 0x76, 0xb0, 0xa4, 0x5d, 0x24, 0xb9, 0x85,
-	0xe5, 0x9f, 0x84, 0x00, 0x72, 0x5b, 0xac, 0x9f, 0x5e, 0x36, 0xe1, 0x09, 0x9e, 0x42, 0xf0, 0x58,
-	0x6c, 0x37, 0xa1, 0x18, 0xd1, 0x7b, 0xa1, 0x9f, 0x43, 0x2f, 0xc9, 0x41, 0x3d, 0x54, 0x55, 0x47,
-	0x7d, 0xbf, 0x66, 0xfe, 0xc2, 0x6b, 0x90, 0x96, 0xd8, 0x36, 0xe3, 0xd7, 0xc7, 0xe7, 0xab, 0xd9,
-	0x90, 0x9e, 0xac, 0xbd, 0x74, 0x47, 0xbb, 0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x72, 0x04, 0xa8,
-	0xe3, 0x43, 0x01, 0x00, 0x00,
+	// 139 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xe2, 0xe2, 0xce, 0xc9, 0x4f, 0xcf,
+	0xcc, 0xd3, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2e, 0x28, 0xc9, 0x57, 0xd2, 0xe5, 0x62,
+	0x4f, 0x8e, 0x07, 0x8b, 0x0a, 0x09, 0x70, 0x31, 0x97, 0xa5, 0x16, 0x49, 0x30, 0x2a, 0x30, 0x6a,
+	0x70, 0x06, 0x81, 0x98, 0x20, 0x91, 0xd2, 0xcc, 0x14, 0x09, 0x26, 0x05, 0x46, 0x0d, 0xe6, 0x20,
+	0x10, 0x53, 0xc9, 0x97, 0x8b, 0xbd, 0x18, 0xa7, 0x72, 0x09, 0x2e, 0xf6, 0xc4, 0xe4, 0xe4, 0xfc,
+	0xd2, 0xbc, 0x12, 0xb0, 0x16, 0xce, 0x20, 0x18, 0x57, 0x48, 0x8c, 0x8b, 0xad, 0x20, 0xb1, 0xb8,
+	0xb8, 0x3c, 0x45, 0x82, 0x19, 0x2c, 0x01, 0xe5, 0x29, 0xc9, 0x73, 0x71, 0x43, 0x8d, 0x8b, 0x2f,
+	0x4a, 0x2d, 0x84, 0xd9, 0xc7, 0x08, 0xb7, 0x2f, 0x89, 0x0d, 0xec, 0x54, 0x63, 0x40, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x8b, 0x4f, 0x57, 0x5c, 0xb9, 0x00, 0x00, 0x00,
 }
