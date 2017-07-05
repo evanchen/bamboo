@@ -6,6 +6,7 @@ import (
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
+	"github.com/evanchen/bamboo/pto"
 	"github.com/evanchen/bamboo/rpc"
 	"runtime"
 	"time"
@@ -30,6 +31,7 @@ func main() {
 	//base.IsServerReady()
 	fmt.Println("all rpc connections are ready")
 	glog.ChangeSysLogType(glog.LOG_RPC)
+	pto.Init()
 
 	closech := make(chan struct{})
 	go func() {
