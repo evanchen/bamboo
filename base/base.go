@@ -8,6 +8,7 @@ import (
 var g_gsid = -1
 
 var server_ready = make(chan struct{})
+var shutdownch = make(chan bool)
 
 // 0进程id
 const MASTER_GSID = 0
@@ -34,4 +35,12 @@ func IsServerReady() {
 
 func ServerReady() {
 	close(server_ready)
+}
+
+func GetShutdownCh() chan bool {
+	return shutdownch
+}
+
+func Shutdown() {
+	shutdownch <- true
 }

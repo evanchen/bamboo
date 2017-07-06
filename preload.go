@@ -6,10 +6,10 @@ import (
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
-	"github.com/evanchen/bamboo/pto"
+	_ "github.com/evanchen/bamboo/pto"
+	_ "github.com/evanchen/bamboo/pto/ptohandler"
 	"github.com/evanchen/bamboo/rpc"
 	"runtime"
-	"time"
 )
 
 var (
@@ -22,27 +22,14 @@ func main() {
 	etc.LoadConfig()
 	etc.CheckSysConfig(base.GetGsId())
 	glog.Init()
-
 	runtime.GOMAXPROCS(4)
-
 	go rpc.StartRPC()
 	// 等待所有game进程连接完毕,开放玩家连接
-	fmt.Println("waiting rpc connection...")
-	//base.IsServerReady()
-	fmt.Println("all rpc connections are ready")
+	fmt.Println("waiting all rpc connections...")
+	base.IsServerReady()
+	fmt.Println("rpc connections are ok.")
 	glog.ChangeSysLogType(glog.LOG_RPC)
-	pto.Init()
 
-	closech := make(chan struct{})
-	go func() {
-		for {
-			select {
-			case <-time.Tick(5 * time.Second):
-				fmt.Println("tick tack")
-				glog.Test()
-			}
-		}
-		close(closech)
-	}()
-	<-closech
+	<-base.GetShutdownCh()
+	fmt.Println("server shutdown.")
 }

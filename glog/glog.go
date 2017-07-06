@@ -92,6 +92,7 @@ func Init() {
 }
 
 func StartRpcLog() {
+	fmt.Println("[StartRpcLog] connecting log server...")
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
 	opts = append(opts, grpc.WithBlock())
@@ -101,12 +102,11 @@ func StartRpcLog() {
 	}
 	addrPort := fmt.Sprintf("127.0.0.1:%d", port)
 	conn, err := grpc.Dial(addrPort, opts...)
-	fmt.Printf("[StartRpcLog] %v, %v\n", conn, err)
 	if err != nil {
 		log.Fatalf("[StartRpcLog] fail to dial: %v", err)
 	}
 	client := pb.NewRpcLogClient(conn)
-
+	fmt.Println("[StartRpcLog] log server is connected.")
 	go func() {
 		stream, err := client.SendLog(context.Background())
 		if err != nil {

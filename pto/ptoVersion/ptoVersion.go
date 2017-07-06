@@ -12,7 +12,9 @@ import (
 )
 
 var filenamech = make(chan string)
-var structnamech = make(chan string, 5)
+var structnamech1 = make(chan string, 5)
+var structnamech2 = make(chan string, 5)
+
 var wg1 sync.WaitGroup
 var wg2 sync.WaitGroup
 var uniqueStructName = make(map[string]bool)
@@ -31,7 +33,8 @@ func Start() {
 			go doFile("../" + pbFile)
 		}
 		wg1.Wait()
-		close(structnamech)
+		close(structnamech1)
+		close(structnamech2)
 	}()
 
 	go func() {
@@ -48,10 +51,10 @@ func Start() {
 		fmt.Fprintln(wf, "var id2Name = make(map[uint16]string)")
 		fmt.Fprintln(wf, "var name2Id = make(map[string]uint16)")
 		fmt.Fprintln(wf, "var name2Func = make(map[string](func() interface{}))\n")
-		fmt.Fprintln(wf, "func Init() {")
+		fmt.Fprintln(wf, "func init() {")
 		var content []byte
 		lineNum := 0
-		for sname := range structnamech {
+		for sname := range structnamech1 {
 			lineNum++
 			fmt.Fprintf(wf, "\tid2Name[%d] = \"%s\"\n", lineNum, sname)
 			fmt.Fprintf(wf, "\tname2Id[\"%s\"] = %d\n", sname, lineNum)
@@ -87,7 +90,31 @@ func Start() {
 		wf.Sync()
 		wf.Close()
 		os.Rename(verFileName_tmp, verFileName)
-		fmt.Println("finish.")
+		fmt.Println("version finish.")
+	}()
+
+	go func() {
+		defer wg2.Done()
+		verFileName_tmp := path + "/ptohandler/handler.tmp"
+		verFileName := path + "/ptohandler/handler_auto.go"
+		wf, err := os.OpenFile(verFileName_tmp, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+		if err != nil {
+			log.Fatalf("create version file: %s error: %v", verFileName_tmp, err)
+		}
+		fmt.Fprintln(wf, "// This file is created by ptoVersion. DO NOT EDIT.")
+		fmt.Fprintln(wf, "package ptohandler\n")
+		fmt.Fprintln(wf, "import(\n\t\"net\"\n)\n")
+		fmt.Fprintln(wf, "var handlerFunc = make(map[string](func(net.Conn, interface{}) error))\n")
+		fmt.Fprintln(wf, "func init() {")
+		for sname := range structnamech2 {
+			fmt.Fprintf(wf, "\thandlerFunc[\"%s\"] = Handle%s\n", sname, sname)
+		}
+		fmt.Fprintln(wf, "}\n")
+
+		wf.Sync()
+		wf.Close()
+		os.Rename(verFileName_tmp, verFileName)
+		fmt.Println("handler finish.")
 	}()
 }
 
@@ -134,12 +161,15 @@ func doFile(fname string) {
 			log.Fatalf("uniqueStructName: file: %s, struct: %s", fname, v[1])
 		}
 		uniqueStructName[v[1]] = true
-		structnamech <- v[1]
+		structnamech1 <- v[1]
+		if strings.HasPrefix(v[1], "S") {
+			structnamech2 <- v[1]
+		}
 	}
 }
 
 func main() {
-	wg2.Add(1)
+	wg2.Add(2)
 	Start()
 	wg2.Wait()
 }

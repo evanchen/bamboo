@@ -6,20 +6,24 @@ var id2Name = make(map[uint16]string)
 var name2Id = make(map[string]uint16)
 var name2Func = make(map[string](func() interface{}))
 
-func Init() {
-	id2Name[1] = "CLogin"
-	name2Id["CLogin"] = 1
-	name2Func["CLogin"] = func() interface{} { return &CLogin{} }
-
-	id2Name[2] = "SLogin"
-	name2Id["SLogin"] = 2
+func init() {
+	id2Name[1] = "SLogin"
+	name2Id["SLogin"] = 1
 	name2Func["SLogin"] = func() interface{} { return &SLogin{} }
+
+	id2Name[2] = "CLogin"
+	name2Id["CLogin"] = 2
+	name2Func["CLogin"] = func() interface{} { return &CLogin{} }
 
 	id2Name[3] = "SLoginReq"
 	name2Id["SLoginReq"] = 3
 	name2Func["SLoginReq"] = func() interface{} { return &SLoginReq{} }
 
-	md5sum = "3e6bab5f724259a0f9e6fb67a7847d61"
+	id2Name[4] = "CLoginRet"
+	name2Id["CLoginRet"] = 4
+	name2Func["CLoginRet"] = func() interface{} { return &CLoginRet{} }
+
+	md5sum = "636d366d40d9d37abeb46431bcf5e382"
 }
 
 func GetPtoName(id uint16) (string, bool) {
@@ -43,4 +47,3 @@ func GetNewPto(name string) interface{} {
 func GetVersion() string {
 	return md5sum
 }
-
