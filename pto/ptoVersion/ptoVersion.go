@@ -47,10 +47,11 @@ func Start() {
 		}
 		fmt.Fprintln(wf, "// This file is created by ptoVersion. DO NOT EDIT.")
 		fmt.Fprintln(wf, "package pto\n")
+		fmt.Fprintln(wf, "import(\n\t\"github.com/golang/protobuf/proto\"\n)\n")
 		fmt.Fprintln(wf, "var md5sum string")
 		fmt.Fprintln(wf, "var id2Name = make(map[uint16]string)")
 		fmt.Fprintln(wf, "var name2Id = make(map[string]uint16)")
-		fmt.Fprintln(wf, "var name2Func = make(map[string](func() interface{}))\n")
+		fmt.Fprintln(wf, "var name2Func = make(map[string](func() proto.Message))\n")
 		fmt.Fprintln(wf, "func init() {")
 		var content []byte
 		lineNum := 0
@@ -58,7 +59,7 @@ func Start() {
 			lineNum++
 			fmt.Fprintf(wf, "\tid2Name[%d] = \"%s\"\n", lineNum, sname)
 			fmt.Fprintf(wf, "\tname2Id[\"%s\"] = %d\n", sname, lineNum)
-			fmt.Fprintf(wf, "\tname2Func[\"%s\"] = func() interface{} { return &%s{} }\n\n", sname, sname)
+			fmt.Fprintf(wf, "\tname2Func[\"%s\"] = func() proto.Message { return &%s{} }\n\n", sname, sname)
 
 			txt := ([]byte)(fmt.Sprintf("%d=%s", lineNum, sname))
 			content = append(content, txt...)
@@ -75,7 +76,7 @@ func Start() {
 		fmt.Fprintln(wf, "\treturn v, ok")
 		fmt.Fprintln(wf, "}\n")
 
-		fmt.Fprintln(wf, "func GetNewPto(name string) interface{} {")
+		fmt.Fprintln(wf, "func GetNewPto(name string) proto.Message {")
 		fmt.Fprintln(wf, "\tvar fn, ok = name2Func[name]")
 		fmt.Fprintln(wf, "\tif !ok {")
 		fmt.Fprintln(wf, "\t\treturn nil")

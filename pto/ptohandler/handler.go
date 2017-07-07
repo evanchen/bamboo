@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/evanchen/bamboo/pto"
+	"github.com/golang/protobuf/proto"
 	"io"
 	"net"
-	"github.com/golang/protobuf/proto"
 )
 
 const (
@@ -14,20 +14,20 @@ const (
 	MAX_TCP_DATA_LEN = 65535
 )
 
-func Recv(conn net.Conn) (uint16,[]byte,error) {
+func Recv(conn net.Conn) (uint16, []byte, error) {
 	header := make([]byte, TCP_HEADER_LEN)
 	_, err := io.ReadFull(conn, header)
 	if err != nil {
-		return 0,nil,err
+		return 0, nil, err
 	}
 	ptoLen, ptoId := ParseHeader(header)
 	if !(ptoLen >= 0 && ptoLen < MAX_TCP_DATA_LEN) {
-		return 0,nil,errors.New(fmt.Sprintf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId))
+		return 0, nil, errors.New(fmt.Sprintf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId))
 	}
 	data := make([]byte, ptoLen)
 	_, err = io.ReadFull(conn, data)
 	if err != nil {
-		return 0,nil,err
+		return 0, nil, err
 	}
 	return ptoId, data, nil
 }

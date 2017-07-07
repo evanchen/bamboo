@@ -1,12 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/pto"
 	"github.com/evanchen/bamboo/pto/ptohandler"
 	"log"
 	"net"
-	"fmt"
+	"io"
+	"errors"
+	"github.com/golang/protobuf/proto"
 )
 
 var shutdownch = make(chan bool)
@@ -56,9 +59,10 @@ func HandleMsg(conn net.Conn, ptoId uint16, data []byte) error {
 	if err != nil {
 		return err
 	}
-	if ptoName == "CLogin" {
+	switch ptoObj.(type) {
+	case *pto.CLogin:
 
-	} else if ptoName == "CLoginRet" {
+	case *pto.CLoginRet:
 
 	}
 

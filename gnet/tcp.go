@@ -41,7 +41,7 @@ func Start() {
 func HandleConn(conn *net.Conn) {
 	defer conn.Close()
 	for {
-		ptoId,data,err := ptohandler.Recv(conn)
+		ptoId, data, err := ptohandler.Recv(conn)
 		if err != nil {
 			if err == io.EOF {
 				logger.Info("conn closed: %v", conn)

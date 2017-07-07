@@ -7,13 +7,13 @@ import (
 )
 
 func HandleSLogin(conn net.Conn, d interface{}) error {
-	p := d.(*pto.SLogin)
+	p, _ := d.(*pto.SLogin)
 	fmt.Printf("%v\n", p)
 	return nil
 }
 
 func HandleSLoginReq(conn net.Conn, d interface{}) error {
-	p := d.(*pto.SLoginReq)
+	p, _ := d.(*pto.SLoginReq)
 	fmt.Printf("%v\n", p)
 	return nil
 }
