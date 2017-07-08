@@ -70,6 +70,7 @@ func WriteFile(path, str string) {
 	}
 
 	lg.logger.Printf("%s\n", str)
+	lg.fh.Sync()
 }
 
 // 每天更换一次日志文件名

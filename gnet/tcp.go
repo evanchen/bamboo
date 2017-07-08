@@ -1,14 +1,15 @@
 package gnet
 
 import (
+	"fmt"
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
-	"github.com/evanchen/bamboo/pto"
+	_ "github.com/evanchen/bamboo/pto"
 	"github.com/evanchen/bamboo/pto/ptohandler"
+	"io"
 	"log"
 	"net"
-	"syscall"
 )
 
 var logger = glog.New("log/login.log")
@@ -23,6 +24,7 @@ func Start() {
 		log.Fatalf("false listening port: %s", err.Error())
 	}
 
+	fmt.Printf("gnet.Start()...")
 	go func() {
 		for {
 			conn, err := ln.Accept()
@@ -38,8 +40,10 @@ func Start() {
 	}()
 }
 
-func HandleConn(conn *net.Conn) {
+func HandleConn(conn net.Conn) {
 	defer conn.Close()
+	logger.Info("[HandleConn] accept new connection: %v", conn)
+
 	for {
 		ptoId, data, err := ptohandler.Recv(conn)
 		if err != nil {

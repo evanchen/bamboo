@@ -6,6 +6,7 @@ import (
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
+	"github.com/evanchen/bamboo/gnet"
 	_ "github.com/evanchen/bamboo/pto"
 	_ "github.com/evanchen/bamboo/pto/ptohandler"
 	"github.com/evanchen/bamboo/rpc"
@@ -29,6 +30,9 @@ func main() {
 	base.IsServerReady()
 	fmt.Println("rpc connections are ok.")
 	glog.ChangeSysLogType(glog.LOG_RPC)
+	if base.GetGsId() == base.MASTER_GSID {
+		gnet.Start()
+	}
 
 	<-base.GetShutdownCh()
 	fmt.Println("server shutdown.")
