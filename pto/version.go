@@ -1,7 +1,7 @@
 // This file is created by ptoVersion. DO NOT EDIT.
 package pto
 
-import (
+import(
 	"github.com/golang/protobuf/proto"
 )
 
@@ -19,15 +19,19 @@ func init() {
 	name2Id["CLogin"] = 2
 	name2Func["CLogin"] = func() proto.Message { return &CLogin{} }
 
-	id2Name[3] = "SLoginReq"
-	name2Id["SLoginReq"] = 3
+	id2Name[3] = "CLoginVer"
+	name2Id["CLoginVer"] = 3
+	name2Func["CLoginVer"] = func() proto.Message { return &CLoginVer{} }
+
+	id2Name[4] = "SLoginReq"
+	name2Id["SLoginReq"] = 4
 	name2Func["SLoginReq"] = func() proto.Message { return &SLoginReq{} }
 
-	id2Name[4] = "CLoginRet"
-	name2Id["CLoginRet"] = 4
+	id2Name[5] = "CLoginRet"
+	name2Id["CLoginRet"] = 5
 	name2Func["CLoginRet"] = func() proto.Message { return &CLoginRet{} }
 
-	md5sum = "636d366d40d9d37abeb46431bcf5e382"
+	md5sum = "09b0da6dcab93421f105a77f7388656d"
 }
 
 func GetPtoName(id uint16) (string, bool) {
@@ -51,3 +55,4 @@ func GetNewPto(name string) proto.Message {
 func GetVersion() string {
 	return md5sum
 }
+

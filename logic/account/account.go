@@ -4,6 +4,7 @@ import (
 	"github.com/evanchen/bamboo/glog"
 	"github.com/evanchen/bamboo/pto"
 	"github.com/evanchen/bamboo/pto/ptohandler"
+	"sync"
 )
 
 type Account struct {
@@ -11,4 +12,14 @@ type Account struct {
 	Uid int64
 }
 
-var g_accounts = make(map[string]*Account)
+var g_accounts sync.Map
+
+func SetAccount(acc *Account) {
+	g_accounts.Store(acc.Uid,acc)
+}
+
+func GetAccount(uid int64) *Account {
+	acc,_ := g_accounts.Load(uid)
+	return acc
+}
+

@@ -2,20 +2,24 @@ syntax = "proto3";
 package pto;
 
 message s_login {
-  string ver = 1;
-  string account = 2;
-  string passwd = 3;
+	string ver = 1;
+	string account = 2;
+	string passwd = 3;
 }
 
 message c_login {
-  int64 uid = 2;
+	int64 uid = 2;
+}
+
+message c_login_ver {
+	bool ret = 1;
 }
 
 message s_login_req {
-  int64 uid = 1;
+	int64 uid = 1;
 }
 
 message c_login_ret {
-  repeated int32 role_uid = 1; // 帐号创建的角色uid
-  repeated int32 role_cid = 2; // 角色原型配置id
+	repeated int32 role_uid = 1; // 帐号创建的角色uid
+	repeated int32 role_cid = 2; // 角色原型配置id
 }
