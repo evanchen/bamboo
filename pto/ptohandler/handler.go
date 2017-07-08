@@ -22,9 +22,10 @@ func Recv(conn net.Conn) (uint16, []byte, error) {
 	}
 	ptoLen, ptoId := DecodeHeader(header)
 	if !(ptoLen >= 0 && ptoLen < MAX_TCP_DATA_LEN) {
-		return 0, nil, errors.New(fmt.Sprintf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId))
+		return 0, nil, errors.New(fmt.Sprintf("len error: ptoLen: %d, ptoId: %d\n", ptoLen, ptoId))
 	}
-	data := make([]byte, ptoLen)
+	//fmt.Printf("[ptohandler.Recv]: header: %v, ptoLen: %d, ptoId: %d", header, ptoLen, ptoId)
+	data := make([]byte, ptoLen-TCP_HEADER_LEN)
 	_, err = io.ReadFull(conn, data)
 	if err != nil {
 		return 0, nil, err
@@ -34,10 +35,9 @@ func Recv(conn net.Conn) (uint16, []byte, error) {
 
 func DecodeHeader(header []byte) (uint16, uint16) {
 	// 大端
-	ptoLen := uint16(header[0]) << 8
+	ptoLen := uint16((header[0] << 8))
 	ptoLen |= uint16(header[1])
-
-	ptoId := uint16(header[2]) << 8
+	ptoId := uint16((header[2]) << 8)
 	ptoId |= uint16(header[3])
 
 	return ptoLen, ptoId
@@ -45,11 +45,10 @@ func DecodeHeader(header []byte) (uint16, uint16) {
 
 func EncodeHeader(ptoLen, ptoId uint16, header []byte) {
 	// 大端
-	header[0] = byte(ptoLen >> 8)
-	header[1] = byte(ptoLen & 0xf)
-
-	header[2] = byte(ptoId >> 8)
-	header[3] = byte(ptoId & 0xf)
+	header[0] = byte((ptoLen >> 8) & 0xff)
+	header[1] = byte(ptoLen & 0xff)
+	header[2] = byte((ptoId >> 8) & 0xff)
+	header[3] = byte(ptoId & 0xff)
 }
 
 func HandleMsg(conn net.Conn, ptoId uint16, data []byte) error {

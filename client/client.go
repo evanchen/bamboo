@@ -102,12 +102,15 @@ func SendPto(conn net.Conn, ptoId uint16, data []byte) {
 	if !(ptoLen >= 0 && ptoLen < ptohandler.MAX_TCP_DATA_LEN) {
 		log.Fatalf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId)
 	}
-	header := make([]byte, ptohandler.TCP_HEADER_LEN)
-	ptohandler.EncodeHeader(uint16(ptoLen), ptoId, header)
-	header = append(header, data...)
-	_, err := conn.Write(header)
+	tData := make([]byte, ptoLen)
+	ptohandler.EncodeHeader(uint16(ptoLen), ptoId, tData)
+	copy(tData[ptohandler.TCP_HEADER_LEN:], data)
+	slen, err := conn.Write(tData)
 	if err != nil {
 		log.Fatalf("[SendPto] ptoId: %d, error: %s", ptoId, err.Error)
 	}
-	fmt.Printf("[SendPto] ptoId: %d ok. \n", ptoId)
+	if slen != ptoLen {
+		log.Fatalf("[SendPto] slen: %d, ptoLen: %d", slen, ptoLen)
+	}
+	fmt.Printf("[SendPto] ptoId: %d, header: %v, ptoLen: %d\n", ptoId, tData[:ptohandler.TCP_HEADER_LEN], ptoLen)
 }

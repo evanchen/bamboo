@@ -24,7 +24,7 @@ func Start() {
 		log.Fatalf("false listening port: %s", err.Error())
 	}
 
-	fmt.Printf("gnet.Start()...")
+	fmt.Println("gnet.Start()...")
 	go func() {
 		for {
 			conn, err := ln.Accept()
@@ -59,4 +59,6 @@ func HandleConn(conn net.Conn) {
 			logger.Error("handler proto: %d, error: %s", ptoId, err.Error())
 		}
 	}
+	logger.Info("[HandleConn] accept new connection: %v", conn)
+
 }
