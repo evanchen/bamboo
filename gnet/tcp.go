@@ -10,10 +10,9 @@ import (
 	"io"
 	"log"
 	"net"
-	"errors"
 )
 
-var logger = glog.New("log/login.log")
+var logger = glog.New("log/tcp.log")
 
 func Start() {
 	ret, port := etc.GetConfigInt("master_port")
@@ -33,7 +32,6 @@ func Start() {
 				logger.Error("accept error: %s", err)
 				return
 			}
-			logger.Info("accept conn: %v", conn)
 			go HandleConn(conn)
 		}
 
@@ -49,9 +47,9 @@ func HandleConn(conn net.Conn) {
 		ptoId, data, err := ptohandler.Recv(conn)
 		if err != nil {
 			if err == io.EOF {
-				logger.Info("conn closed: %v", conn)
+				logger.Info("conn normally closed: %v", conn)
 			} else {
-				logger.Error("conn: %v \nerror: %s", conn, err.Error())
+				logger.Error("conn: %v error: \n%s", conn, err.Error())
 			}
 			break
 		}
@@ -61,19 +59,4 @@ func HandleConn(conn net.Conn) {
 		}
 	}
 	logger.Info("[HandleConn] connection ending: %v", conn)
-}
-
-func Send(conn net.Conn, ptoId uint16, data []byte) error {
-	ptoLen := ptohandler.TCP_HEADER_LEN + len(data)
-	if !(ptoLen >= 0 && ptoLen < ptohandler.MAX_TCP_DATA_LEN) {
-		return errors.New(fmt.Sprintf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId))
-	}
-	tData := make([]byte, ptoLen)
-	ptohandler.EncodeHeader(uint16(ptoLen), ptoId, tData)
-	copy(tData[ptohandler.TCP_HEADER_LEN:], data)
-	slen, err := conn.Write(tData)
-	if err != nil {
-		return err
-	}
-	return nil 
 }

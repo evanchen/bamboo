@@ -38,14 +38,18 @@ func HandleConn(conn net.Conn) {
 		log.Fatalf("[pto.GetPtoId] error: %s", "SLogin")
 	}
 	firstPto := pto.GetNewPto("SLogin").(*pto.SLogin)
-	firstPto.Ver = "636d366d40d9d37abeb46431bcf5e382"
+	firstPto.Ver = pto.GetVersion()
 	firstPto.Account = "golang"
 	firstPto.Passwd = "123456"
 	firstData, err := proto.Marshal(firstPto)
 	if err != nil {
 		log.Fatalf("marshaling error: %s", err.Error())
 	}
-	SendPto(conn, firstPtoId, firstData)
+	err = ptohandler.Send(conn, firstPtoId, firstData)
+	if err != nil {
+		log.Fatalf("first send error: %v", err)
+		return
+	}
 
 	for {
 		ptoId, data, err := ptohandler.Recv(conn)
@@ -78,16 +82,25 @@ func HandleMsg(conn net.Conn, ptoId uint16, data []byte) error {
 	switch ptoObj.(type) {
 	case *pto.CLogin:
 		p := ptoObj.(*pto.CLogin)
-		uid := p.Uid
 		fmt.Printf("%v\n", p)
 
+		retPtoId, ok := pto.GetPtoId("SLoginReq")
+		if !ok {
+			log.Fatalf("[pto.GetPtoId] error: %s", "SLoginReq")
+		}
 		sendPto := pto.GetNewPto("SLoginReq").(*pto.SLoginReq)
-		sendPto.Uid = uid
+		sendPto.Uid = p.Uid
 		sData, err := proto.Marshal(sendPto)
 		if err != nil {
 			log.Fatalf("marshaling error: %s", err.Error())
 		}
-		SendPto(conn, ptoId, sData)
+		return ptohandler.Send(conn, retPtoId, sData)
+	case *pto.CLoginVer:
+		p := ptoObj.(*pto.CLoginVer)
+		fmt.Printf("%v\n", p)
+		if !p.Ret {
+			return errors.New("protocol version doesn't match.")
+		}
 	case *pto.CLoginRet:
 		p := ptoObj.(*pto.CLoginRet)
 		fmt.Printf("%v\n", p)
@@ -95,22 +108,4 @@ func HandleMsg(conn net.Conn, ptoId uint16, data []byte) error {
 	}
 
 	return nil
-}
-
-func SendPto(conn net.Conn, ptoId uint16, data []byte) {
-	ptoLen := ptohandler.TCP_HEADER_LEN + len(data)
-	if !(ptoLen >= 0 && ptoLen < ptohandler.MAX_TCP_DATA_LEN) {
-		log.Fatalf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId)
-	}
-	tData := make([]byte, ptoLen)
-	ptohandler.EncodeHeader(uint16(ptoLen), ptoId, tData)
-	copy(tData[ptohandler.TCP_HEADER_LEN:], data)
-	slen, err := conn.Write(tData)
-	if err != nil {
-		log.Fatalf("[SendPto] ptoId: %d, error: %s", ptoId, err.Error)
-	}
-	if slen != ptoLen {
-		log.Fatalf("[SendPto] slen: %d, ptoLen: %d", slen, ptoLen)
-	}
-	fmt.Printf("[SendPto] ptoId: %d, header: %v, ptoLen: %d\n", ptoId, tData[:ptohandler.TCP_HEADER_LEN], ptoLen)
 }

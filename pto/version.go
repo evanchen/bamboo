@@ -1,7 +1,7 @@
 // This file is created by ptoVersion. DO NOT EDIT.
 package pto
 
-import(
+import (
 	"github.com/golang/protobuf/proto"
 )
 
@@ -55,4 +55,3 @@ func GetNewPto(name string) proto.Message {
 func GetVersion() string {
 	return md5sum
 }
-

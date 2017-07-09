@@ -1,7 +1,7 @@
 // This file is created by ptoVersion. DO NOT EDIT.
 package ptohandler
 
-import(
+import (
 	"net"
 )
 
@@ -11,4 +11,3 @@ func init() {
 	handlerFunc["SLogin"] = HandleSLogin
 	handlerFunc["SLoginReq"] = HandleSLoginReq
 }
-

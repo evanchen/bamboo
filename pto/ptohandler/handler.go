@@ -33,13 +33,27 @@ func Recv(conn net.Conn) (uint16, []byte, error) {
 	return ptoId, data, nil
 }
 
+func Send(conn net.Conn, ptoId uint16, data []byte) error {
+	ptoLen := TCP_HEADER_LEN + len(data)
+	if !(ptoLen >= 0 && ptoLen < MAX_TCP_DATA_LEN) {
+		return errors.New(fmt.Sprintf("len error: ptoLen: %d, ptoId: %d", ptoLen, ptoId))
+	}
+	tData := make([]byte, ptoLen)
+	EncodeHeader(uint16(ptoLen), ptoId, tData)
+	copy(tData[TCP_HEADER_LEN:], data)
+	_, err := conn.Write(tData)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func DecodeHeader(header []byte) (uint16, uint16) {
 	// 大端
 	ptoLen := uint16((header[0] << 8))
 	ptoLen |= uint16(header[1])
 	ptoId := uint16((header[2]) << 8)
 	ptoId |= uint16(header[3])
-
 	return ptoLen, ptoId
 }
 

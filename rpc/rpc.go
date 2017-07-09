@@ -5,7 +5,7 @@ import (
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/proc"
-	pb "github.com/evanchen/bamboo/rpcpto"
+	pb "github.com/evanchen/bamboo/pto/rpcpto"
 	"google.golang.org/grpc"
 	"log"
 	"net"

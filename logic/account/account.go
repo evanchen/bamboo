@@ -15,11 +15,10 @@ type Account struct {
 var g_accounts sync.Map
 
 func SetAccount(acc *Account) {
-	g_accounts.Store(acc.Uid,acc)
+	g_accounts.Store(acc.Uid, acc)
 }
 
 func GetAccount(uid int64) *Account {
-	acc,_ := g_accounts.Load(uid)
+	acc, _ := g_accounts.Load(uid)
 	return acc
 }
-

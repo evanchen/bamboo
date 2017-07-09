@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
-	pb "github.com/evanchen/bamboo/rpcpto"
+	pb "github.com/evanchen/bamboo/pto/rpcpto"
 	_ "golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"io"
