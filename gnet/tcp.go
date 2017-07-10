@@ -5,7 +5,7 @@ import (
 	"github.com/evanchen/bamboo/base"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
-	_ "github.com/evanchen/bamboo/pto"
+	"github.com/evanchen/bamboo/pto"
 	"github.com/evanchen/bamboo/pto/ptohandler"
 	"io"
 	"log"
@@ -44,7 +44,7 @@ func HandleConn(conn net.Conn) {
 	logger.Info("[HandleConn] accept new connection: %v", conn)
 
 	for {
-		ptoId, data, err := ptohandler.Recv(conn)
+		ptoId, data, err := pto.Recv(conn)
 		if err != nil {
 			if err == io.EOF {
 				logger.Info("conn normally closed: %v", conn)

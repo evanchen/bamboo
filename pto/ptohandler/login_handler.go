@@ -20,7 +20,7 @@ func HandleSLogin(conn net.Conn, d interface{}) error {
 		if err != nil {
 			return err
 		}
-		return Send(conn, ptoId, data)
+		return pto.Send(conn, ptoId, data)
 	} else {
 		ptoId, _ := pto.GetPtoId("CLogin")
 		retPto := pto.GetNewPto("CLogin").(*pto.CLogin)
@@ -29,7 +29,7 @@ func HandleSLogin(conn net.Conn, d interface{}) error {
 		if err != nil {
 			return err
 		}
-		return Send(conn, ptoId, data)
+		return pto.Send(conn, ptoId, data)
 	}
 
 	return nil

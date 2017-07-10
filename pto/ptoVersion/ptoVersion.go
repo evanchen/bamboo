@@ -39,8 +39,8 @@ func Start() {
 
 	go func() {
 		defer wg2.Done()
-		verFileName_tmp := path + "/version.tmp"
-		verFileName := path + "/version.go"
+		verFileName_tmp := path + "/version_auto.tmp"
+		verFileName := path + "/version_auto.go"
 		wf, err := os.OpenFile(verFileName_tmp, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 		if err != nil {
 			log.Fatalf("create version file: %s error: %v", verFileName_tmp, err)
@@ -96,7 +96,7 @@ func Start() {
 
 	go func() {
 		defer wg2.Done()
-		verFileName_tmp := path + "/ptohandler/handler.tmp"
+		verFileName_tmp := path + "/ptohandler/handler_auto.tmp"
 		verFileName := path + "/ptohandler/handler_auto.go"
 		wf, err := os.OpenFile(verFileName_tmp, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 		if err != nil {
@@ -130,6 +130,11 @@ func walkFunc(path string, info os.FileInfo, err error) error {
 	if isdir {
 		return nil
 	}
+
+	if strings.Index(path, "rpcpto") != -1 {
+		return nil
+	}
+
 	if !strings.HasSuffix(name, ".pb.go") {
 		return nil
 	}
