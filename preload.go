@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/evanchen/bamboo/base"
+	"github.com/evanchen/bamboo/db"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/glog"
 	"github.com/evanchen/bamboo/gnet"
@@ -33,7 +34,9 @@ func main() {
 	if base.GetGsId() == base.MASTER_GSID {
 		gnet.Start()
 	}
+	db.Init()
 
+	fmt.Println("***************start to serve***************")
 	<-base.GetShutdownCh()
 	fmt.Println("server shutdown.")
 }

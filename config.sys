@@ -27,5 +27,11 @@ game_2_port = 3102
 game_3_port = 3103
 
 #最大game进程数量
-max_game_num = 2
+max_game_num = 1
 
+#数据库相关
+#数据库地址与端口
+db_addr = 127.0.0.1:27010
+db_name = gamedb
+db_user = wqchen
+db_pwd = 1234

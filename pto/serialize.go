@@ -1,5 +1,5 @@
 // pto 模块作为协议模块(.pb.go集合)
-// 本模块出了依赖系统包和proto包外,不依赖其他包
+// 本模块除了依赖系统包和proto包外,不依赖其他包
 package pto
 
 import (

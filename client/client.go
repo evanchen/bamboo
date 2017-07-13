@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/evanchen/bamboo/etc"
 	"github.com/evanchen/bamboo/pto"
-	"github.com/evanchen/bamboo/pto/ptohandler"
 	"github.com/golang/protobuf/proto"
 	"io"
 	"log"
@@ -45,14 +44,14 @@ func HandleConn(conn net.Conn) {
 	if err != nil {
 		log.Fatalf("marshaling error: %s", err.Error())
 	}
-	err = ptohandler.Send(conn, firstPtoId, firstData)
+	err = pto.Send(conn, firstPtoId, firstData)
 	if err != nil {
 		log.Fatalf("first send error: %v", err)
 		return
 	}
 
 	for {
-		ptoId, data, err := ptohandler.Recv(conn)
+		ptoId, data, err := pto.Recv(conn)
 		if err != nil {
 			if err == io.EOF {
 				log.Fatalf("conn closed: %v", conn)
@@ -94,7 +93,7 @@ func HandleMsg(conn net.Conn, ptoId uint16, data []byte) error {
 		if err != nil {
 			log.Fatalf("marshaling error: %s", err.Error())
 		}
-		return ptohandler.Send(conn, retPtoId, sData)
+		return pto.Send(conn, retPtoId, sData)
 	case *pto.CLoginVer:
 		p := ptoObj.(*pto.CLoginVer)
 		fmt.Printf("%v\n", p)

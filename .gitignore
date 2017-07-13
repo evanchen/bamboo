@@ -4,6 +4,8 @@ pkg/
 src/github.com/
 src/golang.org/
 src/google.golang.org/
+src/github.com/evanchen/bamboo/db/data
+src/github.com/evanchen/bamboo/db/log
 
 *.exe
 *.log
